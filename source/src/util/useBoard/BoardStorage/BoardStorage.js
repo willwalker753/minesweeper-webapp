@@ -2,6 +2,7 @@ import BoardStorageInterface from './BoardStorageInterface';
 
 class BoardStorage extends BoardStorageInterface{
     constructor(onRowsChange, onMineCountChange, onMarkedCountChange) {
+        super();
         this._onRowsChange = onRowsChange;
         this._onMineCountChange = onMineCountChange;
         this._onMarkedCountChange = onMarkedCountChange;

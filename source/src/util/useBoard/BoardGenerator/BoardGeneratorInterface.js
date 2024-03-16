@@ -1,4 +1,4 @@
-class BoardGenInterface {
+class BoardGeneratorInterface {
     /*
     creates a new board and stores it in board storage
     rowCount (int)
@@ -21,4 +21,4 @@ class BoardGenInterface {
     }
 }
 
-export default BoardGenInterface;
+export default BoardGeneratorInterface;
