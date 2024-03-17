@@ -1,19 +1,19 @@
 import BoardGeneratorInterface from './BoardGeneratorInterface';
 
 class BoardGenerator extends BoardGeneratorInterface {
-    constructor(boardStorage) {
+    constructor(gameStorage) {
         super();
-        this.boardStorage = boardStorage;
+        this.gameStorage = gameStorage;
     }
 
     generate_custom = (rowCount, colCount, mineCount) => {
-        this.boardStorage.reset()
-        this.boardStorage.create_cells(rowCount, colCount);
+        this.gameStorage.reset()
+        this.gameStorage.initialize_board_rows(rowCount, colCount);
         // randomize the positions of the mines   
         for (let m=0; m<mineCount; m++) {
             const x = Math.floor(Math.random() * colCount);
             const y = Math.floor(Math.random() * rowCount);
-            this.boardStorage.set_cell_type(x, y, 'mine');
+            this.gameStorage.set_cell_type(x, y, 'mine');
         }
         return this;
     }

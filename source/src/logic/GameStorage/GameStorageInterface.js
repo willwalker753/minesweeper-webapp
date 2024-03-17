@@ -1,5 +1,21 @@
 class BoardStorageInterface {
     /*
+    set the status of the game
+    gameState (string) 'win', 'mine_hit', 'in_progress'
+    returns this
+    */
+    set_game_state = (gameState) => {
+        throw new Error('set_game_state is not implemented')
+    }
+
+    /*
+    returns string
+    */
+    get_game_state = () => {
+        throw new Error('get_game_state is not implemented')
+    }
+
+    /*
     reset all to default/unset values
     returns this
     */
@@ -9,14 +25,14 @@ class BoardStorageInterface {
 
     /*
     initializes the cells in the board so they can be read or set
+    "cell" methods below can only be called after initialize_board_rows
     returns this
     */
-    create_cells = (rowCount, colCount) => {
-        throw new Error('create_cells is not implemented')
+    initialize_board_rows = (rowCount, colCount) => {
+        throw new Error('initialize_board_rows is not implemented')
     }
 
     /*
-    can only be called after calling create above
     x (number) the cell x coordinate starting at 0
     y (number) the cell y coordinate starting at 0
     type (string) 'empty', 'mine'
@@ -46,6 +62,15 @@ class BoardStorageInterface {
         throw new Error('set_cell_mark_type is not implemented')
     }
 
+    /*
+    x (number)
+    y (number)
+    surMineCount (number) 0 when there are no surrounding mines. up to 8 max
+    returns this
+    */
+    set_cell_surrounding_mine_count = (x, y, surMineCount) => {
+        throw new Error('set_cell_surrounding_mine_count is not implemented')
+    }
 
     /*
     x (number)
@@ -55,7 +80,8 @@ class BoardStorageInterface {
         e.g. {
             'cell_type': 'empty',
             'is_hidden': true,
-            'mark_type': 'question'
+            'mark_type': 'question',
+            'surrounding_mine_count': 0
         }
     */
     get_cell = (x, y) => {
@@ -78,18 +104,18 @@ class BoardStorageInterface {
     }
 
     /*
-    set the number of flagged cells to an int
+    set the number of flagged/question cells to an int
     returns this
     */
-    set_marked_count = (count) => {
-        throw new Error('set_marked_count is not implemented')
+    set_marked_cell_count = (count) => {
+        throw new Error('set_marked_cell_count is not implemented')
     }
 
     /*
     returns int
     */
-    get_marked_count = () => {
-        throw new Error('get_marked_count is not implemented')
+    get_marked_cell_count = () => {
+        throw new Error('get_marked_cell_count is not implemented')
     }
 }
 

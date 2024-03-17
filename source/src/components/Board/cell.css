@@ -1,0 +1,13 @@
+.board-cell {
+    background-color: grey;
+    height: 1.2em;
+    margin: 0.1em;
+    width: 1.2em;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.board-cell.board-cell-empty {
+    background-color: lightgrey;
+}

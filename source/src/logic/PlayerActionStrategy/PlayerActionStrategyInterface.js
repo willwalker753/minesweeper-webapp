@@ -1,22 +1,19 @@
-class BoardPlayerActionInterface {
+class PlayerActionStrategyInterface {
     /*
     generates and stores a new game in board storage
     difficulty (string) 'easy', 'medium', 'hard'
     returns this
     */
     new_game = (difficulty) => {
-
+        throw new Error('new_game is not implemented');
     }
 
     /*
     handle the logic for playing a cell
-    returns object 
-        {
-            'game_state': 'in_progress', // 'win', 'mine_hit', 'in_progress'
-        }
+    returns this
     */
-    play_cell = (x, y) => {
-
+    reveal_cell = (x, y) => {
+        throw new Error('reveal_cell is not implemented');
     }
 
     /*
@@ -25,8 +22,8 @@ class BoardPlayerActionInterface {
     returns this
     */
     cycle_cell_mark = (x, y) => {
-
+        throw new Error('cycle_cell_mark is not implemented');
     }
 }
 
-export default BoardPlayerActionInterface;
+export default PlayerActionStrategyInterface;

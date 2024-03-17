@@ -1,8 +1,11 @@
 .board-rows {
+    --cell-size: 1rem;
     display: flex;
     flex-direction: column;
+    font-size: var(--cell-size);
 }
 
 .board-row {
     display: flex;
+    flex-wrap: nowrap;
 }
