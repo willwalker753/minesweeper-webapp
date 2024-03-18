@@ -25,7 +25,7 @@ class BoardStorageInterface {
 
     /*
     initializes the cells in the board so they can be read or set
-    "cell" methods below can only be called after initialize_board_rows
+    "cell" methods below should only be called after initialize_board_rows
     returns this
     */
     initialize_board_rows = (rowCount, colCount) => {
@@ -76,13 +76,14 @@ class BoardStorageInterface {
     x (number)
     y (number)
 
-    returns the cell object 
+    [if cell exists] returns the cell object
         e.g. {
             'cell_type': 'empty',
             'is_hidden': true,
             'mark_type': 'question',
             'surrounding_mine_count': 0
         }
+    [if cell does not exist] returns undefined
     */
     get_cell = (x, y) => {
         throw new Error('get_cell is not implemented')

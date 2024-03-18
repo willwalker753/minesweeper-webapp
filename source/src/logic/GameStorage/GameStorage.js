@@ -69,7 +69,15 @@ class GameStorage extends GameStorageInterface {
     }
 
     get_cell = (x, y) => {
-        return this._boardRows[y][x];
+        try {
+            return this._boardRows[y][x];
+        } catch (e) {
+            // allow TypeError caused by trying to get a cell coordinate that doesn't exist
+            if ((e instanceof TypeError) === true) {
+                return undefined;
+            }
+            throw new Error(e);
+        }
     }
 
     set_mine_count = (count) => {
@@ -112,8 +120,8 @@ class GameStorage extends GameStorageInterface {
             this._set_board_rows(boardRows);
             return this;
         } catch (e) {
+            // allow TypeError caused by trying to update a cell coordinate that doesn't exist
             if ((e instanceof TypeError) === true) {
-                console.warn(`coordinates ${x},${y} probably out of range. full error:`, e);
                 return this;
             }
             throw new Error(e);

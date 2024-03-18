@@ -15,6 +15,7 @@ const Board = ({
     onCellReveal = (x, y) => null,
     onCycleCellMark = (x, y) => null,
 }) => {
+
     const handleCellClick = (e, x, y) => {
         // if left click, then play the cell
         if (e.type === 'click') {
@@ -27,8 +28,10 @@ const Board = ({
         }
     }
 
-    const cellContentDecision = ({ cell_type, is_hidden, mark_type }, cellProps) => {
-        console.log('here in cell decision')
+    const cellContentDecision = (
+        { cell_type, is_hidden, mark_type, surrounding_mine_count }, 
+        cellProps
+    ) => {
         const renderHiddenCell = () => {
             if (mark_type === null) return <HiddenCell {...cellProps} />;
             if (mark_type === 'flag') return <FlaggedCell {...cellProps} />;
@@ -36,7 +39,7 @@ const Board = ({
         }
         const renderRevealedCell = () => {
             if (cell_type === 'mine') return <MineCell {...cellProps} />;
-            // if (sur_mine_count > 0) return <NumberCell number={sur_mine_count} {...cellProps} />;
+            if (surrounding_mine_count > 0) return <NumberCell number={surrounding_mine_count} {...cellProps} />;
             return <EmptyCell {...cellProps} />
         }
         const isHiddenRenderFuncMap = {
@@ -54,9 +57,6 @@ const Board = ({
                     return (
                         <div key={y} className='board-row'>
                             {row.map((cell, x) => {
-                                // 'cell_type': 'empty',
-                                // 'is_hidden': true,
-                                // 'mark_type': null
                                 return cellContentDecision(
                                     cell,
                                     {
@@ -64,17 +64,7 @@ const Board = ({
                                         onClick: (e) => handleCellClick(e, x, y),
                                         onContextMenu: (e) => handleCellClick(e, x, y)
                                     }
-                                )
-                                    // <div 
-                                    //     key={x}
-                                    //     className='board-cell' 
-                                    //     onClick={(e) => handleCellClick(e, x, y)}
-                                    //     onContextMenu={(e) => handleCellClick(e, x, y)}
-                                    // >
-                                        {/* {cell.cell_type} */}
-                                        
-                                    // </div>
-                                
+                                )                            
                             })}
                         </div>
                     )

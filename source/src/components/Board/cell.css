@@ -8,6 +8,7 @@
     -webkit-user-select: none;
 }
 
-.board-cell.board-cell-empty {
+.board-cell.board-cell-empty,
+.board-cell.board-cell-number {
     background-color: lightgrey;
 }

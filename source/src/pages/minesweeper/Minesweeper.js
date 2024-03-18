@@ -4,6 +4,7 @@ import BoardStorage from '../../logic/GameStorage/GameStorage';
 import BoardGenerator from '../../logic/BoardGenerator/BoardGenerator';
 import PlayerActionStrategy from '../../logic/PlayerActionStrategy/PlayerActionStrategy';
 import './minesweeper.css';
+import CellCoordinateHelper from '../../logic/CellCoordinateHelper/CellCoordinateHelper';
 
 // orchestrates a minesweeper game
 function Minesweeper() {
@@ -13,8 +14,9 @@ function Minesweeper() {
     const [markedCellCount, setMarkedCellCount] = useState(0);
 
     const boardStorage = useMemo(() => new BoardStorage(setGameState, setBoardRows, setMineCount, setMarkedCellCount), []);
-    const boardGenerator = useMemo(() => new BoardGenerator(boardStorage), []);
-    const playerActionStrategy = useMemo(() => new PlayerActionStrategy(boardGenerator, boardStorage), []);
+    const cellCoordinateHelper = useMemo(() => new CellCoordinateHelper(), []);
+    const boardGenerator = useMemo(() => new BoardGenerator(boardStorage, cellCoordinateHelper), []);
+    const playerActionStrategy = useMemo(() => new PlayerActionStrategy(boardGenerator, boardStorage, cellCoordinateHelper), []);
 
     // start the game on page load
     useEffect(() => {
@@ -31,7 +33,8 @@ function Minesweeper() {
 
     return (
         <div className='minesweeper'>
-            <p>Marked Cell Count: {markedCellCount}</p>
+            <p>Debug - Marked Cell Count: {markedCellCount}</p>
+            <button onClick={() => playerActionStrategy.new_game('hard')}>Debug - New Game Hard</button>
             <Board
                 boardRows={boardRows}
                 onCellReveal={handleCellReveal}
