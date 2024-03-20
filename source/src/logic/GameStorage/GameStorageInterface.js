@@ -118,6 +118,28 @@ class BoardStorageInterface {
     get_marked_cell_count = () => {
         throw new Error('get_marked_cell_count is not implemented')
     }
+
+    // set the number of revealed empty cells to an int
+    // returns this
+    set_revealed_empty_cell_count = (count) => {
+        throw new Error('set_revealed_empty_cell_count is not implemented')
+    }
+
+    // returns int
+    get_revealed_empty_cell_count = () => {
+        throw new Error('get_revealed_empty_cell_count is not implemented')
+    }
+
+    // set the total number of cells in the board to an int
+    // returns this
+    set_total_cell_count = (count) => {
+        throw new Error('set_total_cell_count is not implemented')
+    }
+
+    // returns int
+    get_total_cell_count = () => {
+        throw new Error('get_total_cell_count is not implemented')
+    }
 }
 
 export default BoardStorageInterface;

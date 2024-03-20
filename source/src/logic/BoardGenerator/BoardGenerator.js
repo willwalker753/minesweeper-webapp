@@ -10,13 +10,16 @@ class BoardGenerator extends BoardGeneratorInterface {
     generate_custom = (rowCount, colCount, mineCount) => {
         // enforce that the mine count is not greater than the number of cells
         // if mines was greater then an infinite loop would happen when trying to randomize the mine position
-        if (mineCount > (rowCount * colCount)) {
+        const totalCellCount = rowCount * colCount;
+        if (mineCount > totalCellCount) {
             throw new Error('mine count cannot be greater than the total cell count')
         }
 
         this.gameStorage.reset()
         this.gameStorage.initialize_board_rows(rowCount, colCount);
-        
+        this.gameStorage.set_total_cell_count(totalCellCount);
+
+        this.gameStorage.set_mine_count(mineCount);
         for (let m=0; m<mineCount; m++) {
             // add a mine to a random cell
             const _genMineCoordPair = () => {

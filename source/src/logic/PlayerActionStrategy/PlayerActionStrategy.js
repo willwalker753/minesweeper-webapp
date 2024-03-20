@@ -14,9 +14,10 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
     }
 
     reveal_cell = (x, y) => {
-        const cell = this.gameStorage.get_cell(x, y);
-
+        if (this._is_cell_change_allowed() === false) return this;
+        
         // if the cell is already revealed, then dont reveal it again  
+        const cell = this.gameStorage.get_cell(x, y);
         if (cell.is_hidden === false) return;
 
         // if the cell is marked, then dont reveal it
@@ -38,11 +39,14 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
         // if the cell has any surrounding mines, then only reveal that cell
         if (cell.surrounding_mine_count > 0) {
             this.gameStorage.set_cell_is_hidden(x, y, false);
+            this._add_revealed_empty_cell_count(1);
+            this._handle_win_condition();
             return;
         }
 
         // otherwise the cell has no surrounding mines, so reveal the group of empty cells that it is in
         let revealedMarkedCellCount = 0;
+        let revealedCellCount = 0;
         let cellRevealQueue = [[x, y]];
         while (cellRevealQueue.length > 0) {
             const [centerX, centerY] = cellRevealQueue.shift();
@@ -61,6 +65,7 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
                 // reveal the cell
                 this.gameStorage.set_cell_is_hidden(curX, curY, false);
                 if (curCell.mark_type !== null) revealedMarkedCellCount++;
+                revealedCellCount++;
                 
                 // if the cell has no surrounding mines, then try to reveal its surrounding cells
                 if (curCell.surrounding_mine_count === 0) {
@@ -68,39 +73,21 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
                 }
             }       
         }
-        // const _reveal_surrounding_cells = (centerX, centerY) => {
-        //     const cellSurCoordPairs = this.cellCoordinateHelper.get_surrounding_coord_pairs(centerX, centerY);
-        //     const cellGroupCoordPairs = [[centerX, centerY], ...cellSurCoordPairs];
-        //     cellGroupCoordPairs.forEach(([curX, curY]) => {
-        //         const curCell = this.gameStorage.get_cell(curX, curY);
-
-        //         // if the cell coordinate does not exist, then skip it
-        //         if (curCell === undefined) return;
-
-        //         // if the cell is already revealed, then don't reveal it and don't propagate to surrounding cells
-        //         if (curCell.is_hidden === false) return;
-                
-        //         // reveal the cell
-        //         this.gameStorage.set_cell_is_hidden(curX, curY, false);
-        //         if (curCell.mark_type !== null) revealedMarkedCellCount++;
-                
-        //         // if the cell has no surrounding mines, then try to reveal its surrounding cells
-        //         if (curCell.surrounding_mine_count === 0) {
-        //             _reveal_surrounding_cells(curX, curY);
-        //         }
-        //     })            
-        // }
-        // _reveal_surrounding_cells(x, y);
         // subtract the revealed marked cells from the the marked cell count 
         const curMarkedCellCount = this.gameStorage.get_marked_cell_count();
         this.gameStorage.set_marked_cell_count(curMarkedCellCount - revealedMarkedCellCount);
+        // update the revealed cell count
+        this._add_revealed_empty_cell_count(revealedCellCount)
 
+        this._handle_win_condition();
         return this;
     }
 
     cycle_cell_mark = (x, y) => {
-        const cell = this.gameStorage.get_cell(x, y);
+        if (this._is_cell_change_allowed() === false) return this;
+        
         // dont change cell marking on revealed cells
+        const cell = this.gameStorage.get_cell(x, y);
         if (cell.is_hidden === false) return this;
 
         // cycle to the next mark
@@ -120,6 +107,31 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
         // if the cell changed to unmarked, then decrement
         if (nextMarkType === null) this.gameStorage.set_marked_cell_count(curMarkedCellCount - 1);
 
+        return this;
+    }
+
+    // dont allow any cell changes when the game is over
+    _is_cell_change_allowed = () => {
+        const gameState = this.gameStorage.get_game_state();
+        if (gameState === 'in_progress') return true;
+        return false;
+    }
+
+    // adds a number to the revealed_empty_cell_count
+    _add_revealed_empty_cell_count = (addend) => {
+        const revealedEmptyCellCount = this.gameStorage.get_revealed_empty_cell_count();
+        this.gameStorage.set_revealed_empty_cell_count(revealedEmptyCellCount + addend);
+        return this;
+    }
+
+    // set the game state to 'win' when all cells except mines are revealed
+    _handle_win_condition = () => {
+        const totalCellCount = this.gameStorage.get_total_cell_count();
+        const mineCount = this.gameStorage.get_mine_count();
+        const revealedEmptyCellCount = this.gameStorage.get_revealed_empty_cell_count();
+        if ((totalCellCount - mineCount) === revealedEmptyCellCount) {
+            this.gameStorage.set_game_state('win')
+        }
         return this;
     }
 }

@@ -1,32 +1,36 @@
 import GameStorageInterface from './GameStorageInterface';
 
 class GameStorage extends GameStorageInterface {
-    constructor(onGameStateChange, onBoardRowsChange, onMineCountChange, onMarkedCellCountChange) {
+    constructor(
+        onStorageChange=(key, value) => null // sends the changed storage key and its new value
+    ) {
         super();
-        this._onGameStateChange = onGameStateChange;
-        this._onBoardRowsChange = onBoardRowsChange;
-        this._onMineCountChange = onMineCountChange;
-        this._onMarkedCellCountChange = onMarkedCellCountChange;
-        this._gameState = 'in_progress';
-        this._boardRows = [];
-        this._mineCount = 0;
-        this._markedCellCount = 0;
-    }
-
-    set_game_state = (gameState) => {
-        this._gameState = gameState;
-        this._onGameStateChange(this._gameState);
-    }
-
-    get_game_state = () => {
-        return this._gameState;
+        this.onStorageChange = onStorageChange;
+        // please only access the storage through _write_storage and _read_storage methods (to centralize handling)
+        this._initStorage = {
+            game_state: 'in_progress',
+            board_rows: [],
+            mine_count: 0,
+            marked_cell_count: 0,
+            revealed_empty_cell_count: 0,            
+            total_cell_count: 0,
+        }
+        this._storage = structuredClone(this._initStorage);
     }
 
     reset = () => {
-        this._set_board_rows([]);
-        this._set_mine_count(0);
-        this._set_marked_cell_count(0);
+        const initStorage = structuredClone(this._initStorage);
+        Object.keys(initStorage).forEach(key => this._write_storage(key, initStorage[key]));
         return this;
+    }
+
+    set_game_state = (gameState) => {
+        this._write_storage('game_state', gameState);
+        return this;
+    }
+
+    get_game_state = () => {
+        return this._read_storage('game_state');
     }
 
     initialize_board_rows = (rowCount, colCount) => {
@@ -44,7 +48,7 @@ class GameStorage extends GameStorageInterface {
         for (let r=0; r<rowCount; r++) {
             boardRows.push(structuredClone(row))
         }
-        this._set_board_rows(boardRows)
+        this._write_storage('board_rows', boardRows);
         return this;
     }
 
@@ -70,7 +74,7 @@ class GameStorage extends GameStorageInterface {
 
     get_cell = (x, y) => {
         try {
-            return this._boardRows[y][x];
+            return this._read_storage('board_rows')[y][x];
         } catch (e) {
             // allow TypeError caused by trying to get a cell coordinate that doesn't exist
             if ((e instanceof TypeError) === true) {
@@ -81,43 +85,47 @@ class GameStorage extends GameStorageInterface {
     }
 
     set_mine_count = (count) => {
-        this._set_mine_count(count);
+        this._write_storage('mine_count', count);
         return this;
     }
 
     get_mine_count = () => {
-        return this._mineCount;
+        return this._read_storage('mine_count');
     }
 
     set_marked_cell_count = (count) => {
-        this._set_marked_cell_count(count);
+        this._write_storage('marked_cell_count', count);
         return this;
     }
 
     get_marked_cell_count = () => {
-        return this._markedCellCount;
+        return this._read_storage('marked_cell_count');
     }
 
-    // centralizes the onChange logic
-    _set_board_rows = (boardRows) => {
-        this._boardRows = boardRows;
-        this._onBoardRowsChange(this._boardRows);
+    set_revealed_empty_cell_count = (count) => {
+        this._write_storage('revealed_empty_cell_count', count);
+        return this;
     }
-    _set_mine_count = (mineCount) => {
-        this._mineCount = mineCount;
-        this._onMineCountChange(this._mineCount);
+
+    get_revealed_empty_cell_count = () => {
+        return this._read_storage('revealed_empty_cell_count');
     }
-    _set_marked_cell_count = (markedCellCount) => {
-        this._markedCellCount = markedCellCount;
-        this._onMarkedCellCountChange(this._markedCellCount);
+
+    set_total_cell_count = (count) => {
+        this._write_storage('total_cell_count', count);
+        return this;
+    }
+
+    get_total_cell_count = () => {
+        return this._read_storage('total_cell_count');
     }
 
     // update one of the fields in a given cell
     _set_cell_kv = (x, y, key, value) => {
         try {
-            let boardRows = structuredClone(this._boardRows);
+            let boardRows = structuredClone(this._read_storage('board_rows'));
             boardRows[y][x][key] = value;
-            this._set_board_rows(boardRows);
+            this._write_storage('board_rows', boardRows);
             return this;
         } catch (e) {
             // allow TypeError caused by trying to update a cell coordinate that doesn't exist
@@ -126,6 +134,16 @@ class GameStorage extends GameStorageInterface {
             }
             throw new Error(e);
         }
+    }
+
+    _write_storage = (key, value) => {
+        // update storage and call the on change callback
+        this._storage[key] = value;
+        this.onStorageChange(key, this._storage[key]);
+    }
+
+    _read_storage = (key) => {
+        return this._storage[key];
     }
 }
 
