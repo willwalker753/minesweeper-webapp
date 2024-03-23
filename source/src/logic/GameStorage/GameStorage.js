@@ -1,4 +1,5 @@
 import GameStorageInterface from './GameStorageInterface';
+import initGameStorage from './initGameStorage';
 
 class GameStorage extends GameStorageInterface {
     constructor(
@@ -6,20 +7,12 @@ class GameStorage extends GameStorageInterface {
     ) {
         super();
         this.onStorageChange = onStorageChange;
-        // please only access the storage through _write_storage and _read_storage methods (to centralize handling)
-        this._initStorage = {
-            game_state: 'in_progress',
-            board_rows: [],
-            mine_count: 0,
-            marked_cell_count: 0,
-            revealed_empty_cell_count: 0,            
-            total_cell_count: 0,
-        }
-        this._storage = structuredClone(this._initStorage);
+        // storage storage should only be changed through _write_storage and _read_storage methods (to centralize handling)
+        this._storage = structuredClone(initGameStorage);
     }
 
     reset = () => {
-        const initStorage = structuredClone(this._initStorage);
+        const initStorage = structuredClone(initGameStorage);
         Object.keys(initStorage).forEach(key => this._write_storage(key, initStorage[key]));
         return this;
     }

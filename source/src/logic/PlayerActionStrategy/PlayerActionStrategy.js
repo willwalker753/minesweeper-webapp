@@ -26,7 +26,7 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
         // if the cell is a mine, then player loses the game
         if (cell.cell_type === 'mine') {
             this.gameStorage.set_cell_is_hidden(x, y, false);
-            this.gameStorage.set_game_state('mine_hit');
+            this.gameStorage.set_game_state('lose');
             /*
                 still need to do the game win/lose stuff
                 when the player hits a mine, i want that mine to explode and cause surrounding squares to be revealed (like a blast radius)

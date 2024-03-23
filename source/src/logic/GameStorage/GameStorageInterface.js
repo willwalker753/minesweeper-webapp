@@ -1,7 +1,11 @@
-class BoardStorageInterface {
+class GameStorageInterface {
     /*
     set the status of the game
-    gameState (string) 'win', 'mine_hit', 'in_progress'
+    gameState (string)
+        - 'initializing' setting up the game
+        - 'in_progress' game is currently being played
+        - 'win' won the game
+        - 'lose' lost the game
     returns this
     */
     set_game_state = (gameState) => {
@@ -142,4 +146,4 @@ class BoardStorageInterface {
     }
 }
 
-export default BoardStorageInterface;
+export default GameStorageInterface;

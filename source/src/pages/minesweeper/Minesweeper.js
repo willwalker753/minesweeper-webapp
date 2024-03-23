@@ -3,17 +3,24 @@ import Board from '../../components/Board/Board';
 import GameStorage from '../../logic/GameStorage/GameStorage';
 import BoardGenerator from '../../logic/BoardGenerator/BoardGenerator';
 import PlayerActionStrategy from '../../logic/PlayerActionStrategy/PlayerActionStrategy';
-import './minesweeper.css';
 import CellCoordinateHelper from '../../logic/CellCoordinateHelper/CellCoordinateHelper';
+import DifficultySelector from '../../components/DifficultySelector/DifficultySelector';
+import GameStopwatch from '../../components/GameStopwatch/GameStopwatch';
+import useGameStopwatch from '../../logic/stopwatch/useGameStopwatch/useGameStopwatch';
+import initGameStorage from '../../logic/GameStorage/initGameStorage';
+import './minesweeper.css';
 
 // orchestrates a minesweeper game
 function Minesweeper() {
-    const [gameState, setGameState] = useState('in_progress');
-    const [boardRows, setBoardRows] = useState([]);
-    const [mineCount, setMineCount] = useState(0);
-    const [markedCellCount, setMarkedCellCount] = useState(0);
-    const [tmp_revealed_empty_cell_count, set_tmp_revealed_empty_cell_count] = useState(0);
-    const [tmp_total_cell_count, set_tmp_total_cell_count] = useState(0);
+    const [gameState, setGameState] = useState(initGameStorage.game_state);
+    const [boardRows, setBoardRows] = useState(initGameStorage.board_rows);
+    const [mineCount, setMineCount] = useState(initGameStorage.mine_count);
+    const [markedCellCount, setMarkedCellCount] = useState(initGameStorage.marked_cell_count);
+    const [gameElapsedSeconds] = useGameStopwatch(gameState);
+    const defaultDifficulty = 'easy';
+    
+    const [tmp_revealed_empty_cell_count, set_tmp_revealed_empty_cell_count] = useState(initGameStorage.revealed_empty_cell_count);
+    const [tmp_total_cell_count, set_tmp_total_cell_count] = useState(initGameStorage.total_cell_count);
 
     // when a stored value in a class changes, update the corresponding react state
     const propagateClassStorageChange = (key, value) => {
@@ -35,7 +42,7 @@ function Minesweeper() {
 
     // start the game on page load
     useEffect(() => {
-        playerActionStrategy.new_game('easy');
+        playerActionStrategy.new_game(defaultDifficulty);
     }, []);
 
     const handleCellReveal = (x, y) => {
@@ -53,9 +60,14 @@ function Minesweeper() {
             <p>Debug - Marked Cell Count: {markedCellCount}</p>
             <p>Debug - Revealed Empty Cell Count: {tmp_revealed_empty_cell_count}</p>
             <p>Debug - Total Cell Count: {tmp_total_cell_count}</p>
-            <button onClick={() => playerActionStrategy.new_game('easy')}>Debug - New Game easy</button>
-            <button onClick={() => playerActionStrategy.new_game('medium')}>Debug - New Game medium</button>
-            <button onClick={() => playerActionStrategy.new_game('hard')}>Debug - New Game hard</button>
+
+            <DifficultySelector 
+                defaultDifficulty={defaultDifficulty}
+                onDifficultyChange={(newDifficulty) => playerActionStrategy.new_game(newDifficulty)}
+            />
+            <GameStopwatch
+                gameElapsedSeconds={gameElapsedSeconds}
+            />
             <Board
                 boardRows={boardRows}
                 onCellReveal={handleCellReveal}

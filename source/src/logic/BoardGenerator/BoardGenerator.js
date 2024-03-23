@@ -15,7 +15,7 @@ class BoardGenerator extends BoardGeneratorInterface {
             throw new Error('mine count cannot be greater than the total cell count')
         }
 
-        this.gameStorage.reset()
+        this.gameStorage.reset();
         this.gameStorage.initialize_board_rows(rowCount, colCount);
         this.gameStorage.set_total_cell_count(totalCellCount);
 
@@ -45,6 +45,8 @@ class BoardGenerator extends BoardGeneratorInterface {
                 this.gameStorage.set_cell_surrounding_mine_count(surX, surY, cell.surrounding_mine_count + 1);
             });
         }
+
+        this.gameStorage.set_game_state('in_progress')
         return this;
     }
 
