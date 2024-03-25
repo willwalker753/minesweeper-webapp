@@ -15,4 +15,6 @@ git pull origin prod
 git merge develop
 git push origin prod
 
+git checkout develop
+
 cd $startPath
