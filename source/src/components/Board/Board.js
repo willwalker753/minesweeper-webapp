@@ -14,12 +14,14 @@ const Board = ({
     boardRows = [], // board rows from GameStorage
     onCellReveal = (x, y) => null,
     onCycleCellMark = (x, y) => null,
+    cellLeftClickActionType='reveal', // 'reveal' or 'cycle_cell_mark'
 }) => {
 
     const handleCellClick = (e, x, y) => {
         // if left click, then play the cell
         if (e.type === 'click') {
-            return onCellReveal(x, y);
+            if (cellLeftClickActionType === 'reveal') return onCellReveal(x, y);
+            if (cellLeftClickActionType === 'cycle_cell_mark') return onCycleCellMark(x, y);
         }
         // if right click, then flag the cell
         if (e.type === 'contextmenu') {

@@ -3,6 +3,7 @@ class GameStorageInterface {
     set the status of the game
     gameState (string)
         - 'initializing' setting up the game
+        - 'ready' game is ready to be played and no moves have been made
         - 'in_progress' game is currently being played
         - 'win' won the game
         - 'lose' lost the game

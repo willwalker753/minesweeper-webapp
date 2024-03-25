@@ -46,7 +46,7 @@ class BoardGenerator extends BoardGeneratorInterface {
             });
         }
 
-        this.gameStorage.set_game_state('in_progress')
+        this.gameStorage.set_game_state('ready')
         return this;
     }
 

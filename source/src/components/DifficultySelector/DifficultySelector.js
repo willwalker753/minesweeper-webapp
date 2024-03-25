@@ -7,7 +7,7 @@ import { PopupContext } from '@mui/base/Unstable_Popup';
 import { CssTransition } from '@mui/base';
 
 const DifficultySelector = ({
-    defaultDifficulty='easy',
+    difficulty='easy',
     onDifficultyChange=(diff)=>null
 }) => {
     return (
@@ -22,7 +22,7 @@ const DifficultySelector = ({
                     listbox: { className: 'diff-select-listbox' },
                     popup: { className: 'diff-select-popup' },
                 }}
-                defaultValue={defaultDifficulty}
+                value={difficulty}
                 onChange={(e, difficulty) => onDifficultyChange(difficulty)}
             >
                 <Option className="diff-select-option" value={'easy'}>

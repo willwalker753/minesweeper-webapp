@@ -8,14 +8,7 @@ const useGameStopwatch = (
     const [elapsedSeconds, startStopwatch, stopStopwatch, resetStopwatch] = useStopwatch();
 
     useEffect(() => {
-        console.log(gameState)
-
-        // todo next:
-        //  the initializing game state is not propagating because it is only set for a couple ms 
-        //  i need to check that the set state call is actually happening.
-        //  if it is, then accomplish it in a different way, like another game state value for board 'unchanged' or 'initialized'
-
-        if (gameState === 'initializing') {
+        if (gameState === 'initializing' || gameState === 'ready') {
             resetStopwatch();
             return;
         }

@@ -14,26 +14,20 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
     }
 
     reveal_cell = (x, y) => {
-        if (this._is_cell_change_allowed() === false) return this;
+        if (this._ensure_game_is_in_progress() === false) return this;
         
         // if the cell is already revealed, then dont reveal it again  
         const cell = this.gameStorage.get_cell(x, y);
-        if (cell.is_hidden === false) return;
+        if (cell.is_hidden === false) return this;
 
         // if the cell is marked, then dont reveal it
-        if (cell.mark_type !== null) return;
+        if (cell.mark_type !== null) return this;
 
         // if the cell is a mine, then player loses the game
         if (cell.cell_type === 'mine') {
             this.gameStorage.set_cell_is_hidden(x, y, false);
             this.gameStorage.set_game_state('lose');
-            /*
-                still need to do the game win/lose stuff
-                when the player hits a mine, i want that mine to explode and cause surrounding squares to be revealed (like a blast radius)
-                    then when that "blast" reaches other mines, they should also explode (smaller explosion)
-                to know when the game wins, there should be a count for the revealed cells, if revealed_cell_count + mine_count = total_cells then win
-            */
-           return;
+            return this;
         }
 
         // if the cell has any surrounding mines, then only reveal that cell
@@ -41,7 +35,7 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
             this.gameStorage.set_cell_is_hidden(x, y, false);
             this._add_revealed_empty_cell_count(1);
             this._handle_win_condition();
-            return;
+            return this;
         }
 
         // otherwise the cell has no surrounding mines, so reveal the group of empty cells that it is in
@@ -77,14 +71,14 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
         const curMarkedCellCount = this.gameStorage.get_marked_cell_count();
         this.gameStorage.set_marked_cell_count(curMarkedCellCount - revealedMarkedCellCount);
         // update the revealed cell count
-        this._add_revealed_empty_cell_count(revealedCellCount)
+        this._add_revealed_empty_cell_count(revealedCellCount);
 
         this._handle_win_condition();
         return this;
     }
 
     cycle_cell_mark = (x, y) => {
-        if (this._is_cell_change_allowed() === false) return this;
+        if (this._ensure_game_is_in_progress() === false) return this;
         
         // dont change cell marking on revealed cells
         const cell = this.gameStorage.get_cell(x, y);
@@ -110,10 +104,15 @@ class PlayerActionStrategy extends PlayerActionStrategyInterface {
         return this;
     }
 
-    // dont allow any cell changes when the game is over
-    _is_cell_change_allowed = () => {
-        const gameState = this.gameStorage.get_game_state();
-        if (gameState === 'in_progress') return true;
+    // change the game state to in progress unless the game can't be in progress
+    // returns (boolean) 
+    //         - True when the game is currently in progress
+    //         - False when the game is not in progress and modifications shouldn't be allowed
+    _ensure_game_is_in_progress = () => {
+        // start the game if it hasn't been started yet
+        if (this.gameStorage.get_game_state() === 'ready') this.gameStorage.set_game_state('in_progress');
+        // dont allow any cell changes when the game is over
+        if (this.gameStorage.get_game_state() === 'in_progress') return true;
         return false;
     }
 

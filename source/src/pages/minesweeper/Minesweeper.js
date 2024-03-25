@@ -6,6 +6,9 @@ import PlayerActionStrategy from '../../logic/PlayerActionStrategy/PlayerActionS
 import CellCoordinateHelper from '../../logic/CellCoordinateHelper/CellCoordinateHelper';
 import DifficultySelector from '../../components/DifficultySelector/DifficultySelector';
 import GameStopwatch from '../../components/GameStopwatch/GameStopwatch';
+import NewGameButton from '../../components/NewGameButton/NewGameButton';
+import MarkedCellCountdown from '../../components/MarkedCellCountdown/MarkedCellCountdown';
+import CellActionSelector from '../../components/CellActionSelector/CellActionSelector';
 import useGameStopwatch from '../../logic/stopwatch/useGameStopwatch/useGameStopwatch';
 import initGameStorage from '../../logic/GameStorage/initGameStorage';
 import './minesweeper.css';
@@ -16,8 +19,9 @@ function Minesweeper() {
     const [boardRows, setBoardRows] = useState(initGameStorage.board_rows);
     const [mineCount, setMineCount] = useState(initGameStorage.mine_count);
     const [markedCellCount, setMarkedCellCount] = useState(initGameStorage.marked_cell_count);
+    const [difficulty, setDifficulty] = useState('easy');
+    const [cellLeftClickActionType, setCellLeftClickActionType] = useState('reveal');
     const [gameElapsedSeconds] = useGameStopwatch(gameState);
-    const defaultDifficulty = 'easy';
     
     const [tmp_revealed_empty_cell_count, set_tmp_revealed_empty_cell_count] = useState(initGameStorage.revealed_empty_cell_count);
     const [tmp_total_cell_count, set_tmp_total_cell_count] = useState(initGameStorage.total_cell_count);
@@ -42,8 +46,13 @@ function Minesweeper() {
 
     // start the game on page load
     useEffect(() => {
-        playerActionStrategy.new_game(defaultDifficulty);
+        handleStartNewGame();
     }, []);
+
+    const handleStartNewGame = (newGameDifficulty=difficulty) => {
+        setDifficulty(newGameDifficulty);
+        playerActionStrategy.new_game(newGameDifficulty);
+    }
 
     const handleCellReveal = (x, y) => {
         playerActionStrategy.reveal_cell(x, y);
@@ -57,13 +66,23 @@ function Minesweeper() {
         <div className='minesweeper'>
             <p>Debug - Game State: {gameState}</p>
             <p>Debug - Mine Count: {mineCount}</p>
-            <p>Debug - Marked Cell Count: {markedCellCount}</p>
             <p>Debug - Revealed Empty Cell Count: {tmp_revealed_empty_cell_count}</p>
             <p>Debug - Total Cell Count: {tmp_total_cell_count}</p>
 
+            <MarkedCellCountdown
+                markedCellCount={markedCellCount}
+                mineCount={mineCount}
+            />
+            <NewGameButton 
+                onClick={handleStartNewGame}
+            />
             <DifficultySelector 
-                defaultDifficulty={defaultDifficulty}
-                onDifficultyChange={(newDifficulty) => playerActionStrategy.new_game(newDifficulty)}
+                difficulty={difficulty}
+                onDifficultyChange={handleStartNewGame}
+            />
+            <CellActionSelector
+                cellLeftClickActionType={cellLeftClickActionType}
+                onCellLeftClickActionTypeChange={setCellLeftClickActionType}
             />
             <GameStopwatch
                 gameElapsedSeconds={gameElapsedSeconds}
@@ -72,6 +91,7 @@ function Minesweeper() {
                 boardRows={boardRows}
                 onCellReveal={handleCellReveal}
                 onCycleCellMark={handleCycleCellMark}
+                cellLeftClickActionType={cellLeftClickActionType}
             />
         </div>
     );
