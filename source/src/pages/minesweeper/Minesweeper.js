@@ -9,6 +9,7 @@ import GameStopwatch from '../../components/GameStopwatch/GameStopwatch';
 import NewGameButton from '../../components/NewGameButton/NewGameButton';
 import MarkedCellCountdown from '../../components/MarkedCellCountdown/MarkedCellCountdown';
 import CellActionSelector from '../../components/CellActionSelector/CellActionSelector';
+import GameActionRow from '../../components/BannerActionRow/GameActionRow';
 import useGameStopwatch from '../../logic/stopwatch/useGameStopwatch/useGameStopwatch';
 import initGameStorage from '../../logic/GameStorage/initGameStorage';
 import './minesweeper.css';
@@ -73,9 +74,6 @@ function Minesweeper() {
                 markedCellCount={markedCellCount}
                 mineCount={mineCount}
             />
-            <NewGameButton 
-                onClick={handleStartNewGame}
-            />
             <DifficultySelector 
                 difficulty={difficulty}
                 onDifficultyChange={handleStartNewGame}
@@ -87,6 +85,10 @@ function Minesweeper() {
             <GameStopwatch
                 gameElapsedSeconds={gameElapsedSeconds}
             />
+            <GameActionRow 
+                onStartNewGame={handleStartNewGame}
+            />
+
             <Board
                 boardRows={boardRows}
                 onCellReveal={handleCellReveal}

@@ -1,0 +1,53 @@
+.btn {
+    --btn-size: 2rem;
+    background-color: transparent;
+    background-position: 50% 50%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    font-size: calc(var(--btn-size) * 0.4);
+    height: var(--btn-size);
+}
+
+/* rectange */
+.btn-rect {
+    padding: calc(var(--btn-size) * 0.1) calc(var(--btn-size) * 0.2) calc(var(--btn-size) * 0.35) calc(var(--btn-size) * 0.2);
+    width: calc(var(--btn-size) * 3);
+}
+.btn-rect:active {
+    padding-top: calc(var(--btn-size) * 0.16);
+}
+
+/* rectangle default */
+.btn-rect-default {
+    background-image: url('/public/images/button/button-blue-3-long.png');
+}
+.btn-rect-default:active {
+    background-image: url('/public/images/button/button-blue-3-long-pressed.png');
+}
+.btn-rect-default:disabled {
+    background-image: url('/public/images/button/button-3-long-disabled.png');
+}
+
+/* rectangle warning */
+.btn-rect-warning {
+    background-image: url('/public/images/button/button-red-3-long.png');
+}
+.btn-rect-warning:active {
+    background-image: url('/public/images/button/button-red-3-long-pressed.png');
+}
+.btn-rect-warning:disabled {
+    background-image: url('/public/images/button/button-3-long-disabled.png');
+}
+
+/* square default */
+.btn-square-default {
+    background-image: url('/public/images/button/button-blue-sm-square.png');
+}
+.btn-square-default:active {
+    background-image: url('/public/images/button/button-blue-sm-square-pressed.png');
+}
+.btn-square-default:disabled {
+    background-image: url('/public/images/button/button-sm-square-disabled.png');
+}

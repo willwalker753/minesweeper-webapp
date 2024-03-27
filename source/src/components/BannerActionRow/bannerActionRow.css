@@ -1,0 +1,37 @@
+.bar {
+    /* use --bar-height to adjust size, not --bar-background-size */
+    --bar-height: 4rem; 
+    --bar-background-size: 1em;
+    font-size: var(--bar-height);
+    position: relative;
+    width: 100%;
+}
+
+.bar-background {
+    display: flex;
+    justify-content: space-between;
+}
+.bar-connector {
+    background-image: url('/public/images/banner/banner-horizontal-connector.png');
+    background-repeat: repeat-x;
+    background-size: var(--bar-background-size) var(--bar-background-size);
+    width: 100%;
+}
+.bar-end, .bar-connector {
+    height: var(--bar-background-size);
+}
+
+.bar-content-container {
+    align-content: center;
+    display: flex;
+    height: calc(var(--bar-background-size) * 0.74);
+    justify-content: space-between;
+    padding: calc(var(--bar-background-size) * 0.1) calc(var(--bar-background-size) * 0.4);
+    position: absolute;
+    top: calc(var(--bar-background-size) * 0.03);
+    width: 100%;
+    z-index: 10;
+}
+.bar-content-item {
+    display: flex;
+}

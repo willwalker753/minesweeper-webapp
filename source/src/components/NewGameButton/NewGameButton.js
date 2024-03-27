@@ -1,12 +1,15 @@
 import React from 'react';
+import Button from '../Button/Button';
 
 const NewGameButton = ({ onClick }) => {
     return (
-        <button 
+        <Button 
+            shape='rect'
+            styleType='warning'
             onClick={(e) => onClick()}
         >
             New Game
-        </button>
+        </Button>
     )
 }
 
